@@ -137,7 +137,7 @@ void initLight() {
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
 
 
-	glEnable(GL_LIGHT0);
+	//glEnable(GL_LIGHT0);
 
 	//spot light
 	float directionSpot[] = { 0.0f, 0.0f, 1.0f, 1.0f };
@@ -179,7 +179,7 @@ void initLight() {
 
 
 
-	//glEnable(GL_LIGHT3);
+	glEnable(GL_LIGHT3);
 }
 
 
