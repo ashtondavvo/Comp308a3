@@ -3,7 +3,7 @@
 // Copyright (c) 2016 Taehyun Rhee, Joshua Scott, Ben Allen
 //
 // This software is provided 'as-is' for assignment of COMP308 in ECS,
-// Victoria University of Wellington, without any express or implied warranty. 
+// Victoria University of Wellington, without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from
 // the use of this software.
 //
@@ -39,7 +39,7 @@ Geometry *teapot = nullptr;
 Geometry *bunny = nullptr;
 
 // Projection values
-// 
+//
 float g_fovy = 20.0;
 float g_znear = 0.1;
 float g_zfar = 1000.0;
@@ -126,7 +126,7 @@ void charCallback(GLFWwindow *win, unsigned int c) {
 
 // Sets up where and what the light is
 // Called once on start up
-// 
+//
 void initLight() {
 	float direction[] = { 0.0f, 0.0f, 1.0f, 0.0f };
 	float diffintensity[] = { 0.7f, 0.7f, 0.7f, 1.0f };
@@ -152,6 +152,34 @@ void initLight() {
 
 
 	//glEnable(GL_LIGHT1);
+
+	//direction light
+	float directionDir[] = { 0.0f, 0.0f, 1.0f, 0.0f };
+	float diffintensityDir[] = { 1.0, 1.0f, 1.0f, 1.0f };
+	float specularDir[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+	//float positionSpot[] = {0.0f, 0.0f, 0.0f, 1.0f };
+
+	glLightfv(GL_LIGHT2, GL_POSITION, directionDir);
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, diffintensityDir);
+	glLightfv(GL_LIGHT2, GL_SPECULAR, specularDir);
+
+
+
+	//glEnable(GL_LIGHT2);
+
+	//point light
+	float directionPoint[] = { 0.0f, 0.0f, 1.0f, 0.0f };
+	float diffintensityPoint[] = { 1.0, 1.0f, 1.0f, 1.0f };
+	float specularPoint[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+	//float positionSpot[] = {0.0f, 0.0f, 0.0f, 1.0f };
+
+	glLightfv(GL_LIGHT3, GL_POSITION, directionPoint);
+	glLightfv(GL_LIGHT3, GL_DIFFUSE, diffintensityPoint);
+	glLightfv(GL_LIGHT3, GL_SPECULAR, specularPoint);
+
+
+
+	//glEnable(GL_LIGHT3);
 }
 
 
@@ -159,8 +187,9 @@ void initLight() {
 //
 void initTexture() {
 
-	//Image tex("./work/res/textures/bricks.jpg"); this was the default path but doesnt work on laptop
-	Image tex("/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/textures/brick.jpg");
+	Image tex("./work/res/textures/brick.jpg"); // this was the default path but doesnt work on laptop
+	//Image tex("/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/textures/brick.jpg");
+	//Image tex("/home/davenpasht/Comp308a3/work/res/textures/brick.jpg");
 
 	glActiveTexture(GL_TEXTURE0); // Use slot 0, need to use GL_TEXTURE1 ... etc if using more than one texture PER OBJECT
 	glGenTextures(1, &g_texture); // Generate texture ID
@@ -176,21 +205,22 @@ void initTexture() {
 	// Finnaly, actually fill the data into our texture
 	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, tex.w, tex.h, tex.glFormat(), GL_UNSIGNED_BYTE, tex.dataPointer());
 
-	Image tex2("/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/textures/wood.jpg");
+	//Image tex2("/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/textures/wood.jpg");
+	Image tex2("./work/res/textures/wood.jpg"); // this was the default path but doesnt work on laptop
+	//Image tex2("/home/davenpasht/Comp308a3/work/res/textures/wood.jpg");
+	glActiveTexture(GL_TEXTURE0); // Use slot 0, need to use GL_TEXTURE1 ... etc if using more than one texture PER OBJECT
+	glGenTextures(1, &g_texture2); // Generate texture ID
+	glBindTexture(GL_TEXTURE_2D, g_texture2); // Bind it as a 2D texture
 
-		glActiveTexture(GL_TEXTURE0); // Use slot 0, need to use GL_TEXTURE1 ... etc if using more than one texture PER OBJECT
-		glGenTextures(1, &g_texture2); // Generate texture ID
-		glBindTexture(GL_TEXTURE_2D, g_texture2); // Bind it as a 2D texture
+	// Setup sampling strategies
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		// Setup sampling strategies
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-		// Finnaly, actually fill the data into our texture
-		gluBuild2DMipmaps(GL_TEXTURE_2D, 3, tex2.w, tex2.h, tex.glFormat(), GL_UNSIGNED_BYTE, tex2.dataPointer());
+	// Finnaly, actually fill the data into our texture
+	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, tex2.w, tex2.h, tex.glFormat(), GL_UNSIGNED_BYTE, tex2.dataPointer());
 }
 
 
@@ -201,12 +231,13 @@ void initShader() {
 	// To create a shader program we use a helper function
 	// We pass it an array of the types of shaders we want to compile
 	// and the corrosponding locations for the files of each stage
-	g_shader = makeShaderProgramFromFile({GL_VERTEX_SHADER, GL_FRAGMENT_SHADER }, { "/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/shaders/shaderDemo.vert", "/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/shaders/shaderDemo.frag" });
+	g_shader = makeShaderProgramFromFile({GL_VERTEX_SHADER, GL_FRAGMENT_SHADER }, { "./work/res/shaders/shaderDemo.vert", "./work/res/shaders/shaderDemo.frag" });
+	//g_shader = makeShaderProgramFromFile({GL_VERTEX_SHADER, GL_FRAGMENT_SHADER }, { "/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/shaders/shaderDemo.vert", "/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/shaders/shaderDemo.frag" });
 }
 
 
 // Sets up where the camera is in the scene
-// 
+//
 void setupCamera(int width, int height) {
 	// Set up the projection matrix
 	glMatrixMode(GL_PROJECTION);
@@ -259,14 +290,14 @@ void render(int width, int height) {
 		glBindTexture(GL_TEXTURE_2D, g_texture);
 
 		// Enable flags for normal rendering
-//			glEnable(GL_DEPTH_TEST);
-//			glEnable(GL_LIGHTING);
-//			glEnable(GL_NORMALIZE);
-//			glEnable(GL_COLOR_MATERIAL);
+		//			glEnable(GL_DEPTH_TEST);
+		//			glEnable(GL_LIGHTING);
+		//			glEnable(GL_NORMALIZE);
+		//			glEnable(GL_COLOR_MATERIAL);
 
-			// Set the current material (for all objects) to red
-			//glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-			///glColor3f(1.0f, 0.0f, 0.0f); //red
+		// Set the current material (for all objects) to red
+		//glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+		///glColor3f(1.0f, 0.0f, 0.0f); //red
 		// Render a single square as our geometry
 		// You would normally render your geometry here
 		glPushMatrix();
@@ -275,7 +306,7 @@ void render(int width, int height) {
 		glTranslatef(0,-5,-5);
 		glRotatef(60, 0, 1, 0);
 		glScalef(1.5,1.5,1.5);
-			table->renderGeometry();
+		table->renderGeometry();
 		glDisable(GL_TEXTURE_2D);
 		glPopMatrix();
 
@@ -284,21 +315,21 @@ void render(int width, int height) {
 		glColor3f(1.0f, 0.7f, 0.2f); //gold
 		glTranslatef(-10,-1.5,0);
 		glScalef(2,2,2);
-			sphere->renderGeometry();
+		sphere->renderGeometry();
 		glPopMatrix();
 
 		glPushMatrix();
 		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 		glColor3f(1.0f, 0.0f, 0.0f); //red
 		glTranslatef(6,-3.8,5);
-			torus->renderGeometry();
+		torus->renderGeometry();
 		glPopMatrix();
 
 		glPushMatrix();
 		glBindTexture(GL_TEXTURE_2D, g_texture); // Bind it as a 2D texture
 		glEnable(GL_TEXTURE_2D);
 		glTranslatef(10,-2.3,-5);
-			cube->renderGeometry();
+		cube->renderGeometry();
 		glDisable(GL_TEXTURE_2D);
 		glPopMatrix();
 
@@ -306,29 +337,29 @@ void render(int width, int height) {
 		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 		glColor3f(0.0f, 0.0f, 1.0f); //blue
 		glTranslatef(-10, -4.2, -10);
-			teapot->renderGeometry();
+		teapot->renderGeometry();
 		glPopMatrix();
 
 		glPushMatrix();
 		glTranslatef(0,-4.2,0);
 		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 		glColor3f(1.0f, 1.0f, 1.0f); //white
-			bunny->renderGeometry();
+		bunny->renderGeometry();
 		glPopMatrix();
 
-			//std::cout << "the models where drawn" << std::endl;
-//		glBegin(GL_QUADS);
-//		glNormal3f(0.0, 0.0, 1.0);
-//		glTexCoord2f(0.0, 0.0);
-//		glVertex3f(-5.0, -5.0, 0.0);
-//		glTexCoord2f(0.0, 1.0);
-//		glVertex3f(-5.0, 5.0, 0.0);
-//		glTexCoord2f(1.0, 1.0);
-//		glVertex3f(5.0, 5.0, 0.0);
-//		glTexCoord2f(1.0, 0.0);
-//		glVertex3f(5.0, -5.0, 0.0);
-//		glEnd();
-//		glFlush();
+		//std::cout << "the models where drawn" << std::endl;
+		//		glBegin(GL_QUADS);
+		//		glNormal3f(0.0, 0.0, 1.0);
+		//		glTexCoord2f(0.0, 0.0);
+		//		glVertex3f(-5.0, -5.0, 0.0);
+		//		glTexCoord2f(0.0, 1.0);
+		//		glVertex3f(-5.0, 5.0, 0.0);
+		//		glTexCoord2f(1.0, 1.0);
+		//		glVertex3f(5.0, 5.0, 0.0);
+		//		glTexCoord2f(1.0, 0.0);
+		//		glVertex3f(5.0, -5.0, 0.0);
+		//		glEnd();
+		//		glFlush();
 	}
 
 
@@ -386,7 +417,7 @@ void APIENTRY debugCallbackARB(GLenum, GLenum, GLuint, GLenum, GLsizei, const GL
 
 
 //Main program
-// 
+//
 int main(int argc, char **argv) {
 
 	// Initialize the GLFW library
@@ -454,13 +485,20 @@ int main(int argc, char **argv) {
 
 	std::cout << "--------- The models have started loading in ------------" << std::endl;
 	// Initialize Geometry/Material/Lights
-	table = new Geometry("/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/assets/table.obj");
-	sphere = new Geometry("/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/assets/sphere.obj");
-	torus = new Geometry("/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/assets/torus.obj");
-	cube = new Geometry("/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/assets/box.obj");
-	teapot = new Geometry("/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/assets/teapot.obj");
-	bunny = new Geometry("/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/assets/bunny.obj");
-	std::cout << "------------- The models have been loaded in ---------------" << std::endl;
+	//	table = new Geometry("/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/assets/table.obj");
+	//	sphere = new Geometry("/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/assets/sphere.obj");
+	//	torus = new Geometry("/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/assets/torus.obj");
+	//	cube = new Geometry("/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/assets/box.obj");
+	//	teapot = new Geometry("/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/assets/teapot.obj");
+	//	bunny = new Geometry("/Users/Ashton/Desktop/Comp308-A3/Assignment_3/work/res/assets/bunny.obj");
+
+	table = new Geometry("./work/res/assets/table.obj");
+	sphere = new Geometry("./work/res/assets/sphere.obj");
+	torus = new Geometry("./work/res/assets/torus.obj");
+	cube = new Geometry("./work/res/assets/box.obj");
+	teapot = new Geometry("./work/res/assets/teapot.obj");
+	bunny = new Geometry("./work/res/assets/bunny.obj");
+	//	std::cout << "------------- The models have been loaded in ---------------" << std::endl;
 	// YOUR CODE GOES HERE
 	// ...
 
@@ -562,9 +600,9 @@ void APIENTRY debugCallbackARB(GLenum source, GLenum type, GLuint id, GLenum sev
 	cerr << endl; // extra space
 
 	cerr << "Type: " <<
-		getStringForType(type) << "; Source: " <<
-		getStringForSource(source) << "; ID: " << id << "; Severity: " <<
-		getStringForSeverity(severity) << endl;
+			getStringForType(type) << "; Source: " <<
+			getStringForSource(source) << "; ID: " << id << "; Severity: " <<
+			getStringForSeverity(severity) << endl;
 
 	cerr << message << endl;
 

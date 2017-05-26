@@ -3,7 +3,7 @@
 // Copyright (c) 2016 Taehyun Rhee, Joshua Scott, Ben Allen
 //
 // This software is provided 'as-is' for assignment of COMP308 in ECS,
-// Victoria University of Wellington, without any express or implied warranty. 
+// Victoria University of Wellington, without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from
 // the use of this software.
 //
@@ -64,7 +64,7 @@ void Geometry::readOBJ(string filename) {
 	}
 
 	cout << "Reading file " << filename << endl;
-	
+
 	// good() means that failbit, badbit and eofbit are all not set
 	while(objFile.good()) {
 
@@ -106,10 +106,10 @@ void Geometry::readOBJ(string filename) {
 				while (objLine.good()){
 					vertex v;
 					//std::cout << count << std::endl;
-//					count = count + 1;
-//					std::cout << "^-----------------------------^" << std::endl;
-//					std::cout << line << std::endl;
-//					std::cout << "<------------------------------->" << std::endl;
+					//					count = count + 1;
+					//					std::cout << "^-----------------------------^" << std::endl;
+					//					std::cout << line << std::endl;
+					//					std::cout << "<------------------------------->" << std::endl;
 					//-------------------------------------------------------------
 					// [Assignment 1] :
 					// Modify the following to parse the bunny.obj. It has no uv
@@ -138,9 +138,9 @@ void Geometry::readOBJ(string filename) {
 					}
 					verts.push_back(v);
 				}
-//				std::cout << "-------------------------------" << std::endl;
-//				std::cout << verts.size() << std::endl;
-//				std::cout << "-------------------------------" << std::endl;
+				//				std::cout << "-------------------------------" << std::endl;
+				//				std::cout << verts.size() << std::endl;
+				//				std::cout << "-------------------------------" << std::endl;
 				// IFF we have 3 verticies, construct a triangle
 				if(verts.size() >= 3){
 					triangle tri;
@@ -168,7 +168,7 @@ void Geometry::readOBJ(string filename) {
 
 //-------------------------------------------------------------
 // [Assignment 1] :
-// Fill the following function to populate the normals for 
+// Fill the following function to populate the normals for
 // the model currently loaded. Compute per face normals
 // first and get that working before moving onto calculating
 // per vertex normals.
@@ -198,23 +198,14 @@ void Geometry::createDisplayListPoly() {
 	glBegin(GL_TRIANGLES);
 
 	for(long i = 0;  i < m_triangles.size(); i++){
-		glTexCoord2f(m_uvs[m_triangles[i].v[0].p].x, m_uvs[m_triangles[i].v[0].p].y);
-		glNormal3f(m_normals[m_triangles[i].v[0].p].x, m_normals[m_triangles[i].v[0].p].y, m_normals[m_triangles[i].v[0].p].z);
-		//glVertex3f(m_points[m_triangles[i].v[0].p].x, m_points[m_triangles[i].v[0].p].y, m_points[m_triangles[i].v[0].p].z);
-		glVertex3f(m_points[m_triangles[i].v[0].p].x, m_points[m_triangles[i].v[0].p].y, m_points[m_triangles[i].v[0].p].z);
-		//glNormal3f(m_normals[m_triangles[i].v[0].p].x, m_normals[m_triangles[i].v[0].p].y, m_normals[m_triangles[i].v[0].p].z);
+		for(int j = 0; j < 3; j++){
 
-		glTexCoord2f(m_uvs[m_triangles[i].v[1].p].x, m_uvs[m_triangles[i].v[1].p].y);
-		glNormal3f(m_normals[m_triangles[i].v[1].p].x, m_normals[m_triangles[i].v[1].p].y, m_normals[m_triangles[i].v[1].p].z);
-		//glVertex3f(m_points[m_triangles[i].v[1].p].x, m_points[m_triangles[i].v[1].p].y, m_points[m_triangles[i].v[1].p].z);
-		glVertex3f(m_points[m_triangles[i].v[1].p].x, m_points[m_triangles[i].v[1].p].y, m_points[m_triangles[i].v[1].p].z);
-		//glNormal3f(m_normals[m_triangles[i].v[1].p].x, m_normals[m_triangles[i].v[1].p].y, m_normals[m_triangles[i].v[1].p].z);
+			glTexCoord2f(m_uvs[m_triangles[i].v[j].t].x, m_uvs[m_triangles[i].v[j].t].y);
+			glNormal3f(m_normals[m_triangles[i].v[j].n].x, m_normals[m_triangles[i].v[j].n].y, m_normals[m_triangles[i].v[j].n].z);
+			glVertex3f(m_points[m_triangles[i].v[j].p].x, m_points[m_triangles[i].v[j].p].y, m_points[m_triangles[i].v[j].p].z);
 
-		glTexCoord2f(m_uvs[m_triangles[i].v[2].p].x, m_uvs[m_triangles[i].v[2].p].y);
-		glNormal3f(m_normals[m_triangles[i].v[2].p].x, m_normals[m_triangles[i].v[2].p].y, m_normals[m_triangles[i].v[2].p].z);
-		//glVertex3f(m_points[m_triangles[i].v[2].p].x, m_points[m_triangles[i].v[2].p].y, m_points[m_triangles[i].v[2].p].z);
-		glVertex3f(m_points[m_triangles[i].v[2].p].x, m_points[m_triangles[i].v[2].p].y, m_points[m_triangles[i].v[2].p].z);
-		//glNormal3f(m_normals[m_triangles[i].v[2].p].x, m_normals[m_triangles[i].v[2].p].y, m_normals[m_triangles[i].v[2].p].z);
+		}
+
 	}
 
 	glEnd();
@@ -271,30 +262,30 @@ void Geometry::createDisplayListWire() {
 void Geometry::renderGeometry() {
 	//if (m_wireFrameOn) {
 
-		//-------------------------------------------------------------
-		// [Assignment 1] :
-		// When moving on to displaying your obj, comment out the
-		// wire_cow function & uncomment the glCallList function
-		//-------------------------------------------------------------
-//		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-//
-//		glShadeModel(GL_SMOOTH);
-//		//wire_cow();
-//		glCallList(m_displayListWire);
+	//-------------------------------------------------------------
+	// [Assignment 1] :
+	// When moving on to displaying your obj, comment out the
+	// wire_cow function & uncomment the glCallList function
+	//-------------------------------------------------------------
+	//		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//
+	//		glShadeModel(GL_SMOOTH);
+	//		//wire_cow();
+	//		glCallList(m_displayListWire);
 
-//	} else {
-//
-//		//-------------------------------------------------------------
-//		// [Assignment 1] :
-//		// When moving on to displaying your obj, comment out the
-//		// cow function & uncomment the glCallList function
-//		//-------------------------------------------------------------
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glShadeModel(GL_SMOOTH);
-		//cow();
-		glCallList(m_displayListPoly);
-//
-//	}
+	//	} else {
+	//
+	//		//-------------------------------------------------------------
+	//		// [Assignment 1] :
+	//		// When moving on to displaying your obj, comment out the
+	//		// cow function & uncomment the glCallList function
+	//		//-------------------------------------------------------------
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glShadeModel(GL_SMOOTH);
+	//cow();
+	glCallList(m_displayListPoly);
+	//
+	//	}
 }
 
 
